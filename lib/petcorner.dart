@@ -24,6 +24,7 @@ class _PetCornerState extends State<PetCorner> {
       setState(() {
         listanimals = petanimalsFromJson(jsonEncode(response.data));
         _fetching = false;
+        petcategory= listanimals.data[0];
       });
       print(response);
     } catch (e) {
@@ -171,7 +172,7 @@ class _PetCornerState extends State<PetCorner> {
                             Container(
                             ):
                             Container(
-                              height: MediaQuery.of(context).size.height,
+                              height: 300,
                               child: ListView.builder(
                                 itemCount:petcategory.items.length,
                                 scrollDirection: Axis.vertical,
@@ -253,7 +254,7 @@ class _PetCornerState extends State<PetCorner> {
   }
 }
 
-class PetsDetails extends StatelessWidget {
+class PetsDetails extends StatefulWidget {
   const PetsDetails({
     this.name,
     this.image,
@@ -261,7 +262,8 @@ class PetsDetails extends StatelessWidget {
     this.subtitle,
     this.months,
     this.length,
-    this.distance
+    this.distance,
+    this.petname
   }) ;
   final String name;
   final String image;
@@ -270,6 +272,13 @@ class PetsDetails extends StatelessWidget {
   final int months;
   final int length;
   final int distance;
+  final String petname;
+
+  @override
+  _PetsDetailsState createState() => _PetsDetailsState();
+}
+
+class _PetsDetailsState extends State<PetsDetails> {
 
   @override
   Widget build(BuildContext context) {
@@ -297,7 +306,7 @@ class PetsDetails extends StatelessWidget {
               onTap: (){
                 Navigator.of(context).push(
                   MaterialPageRoute(
-                    builder: (context) => PetProfile(
+                    builder: (context) => PetProfile(petname: widget.name,
                     ),
                   ),
                 );
@@ -308,7 +317,7 @@ class PetsDetails extends StatelessWidget {
                 decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(15),
                     image: DecorationImage(
-                        image: NetworkImage(image), fit: BoxFit.cover
+                        image: NetworkImage(widget.image), fit: BoxFit.cover
                     ),
                     color: Colors.pinkAccent
                 ),
@@ -319,19 +328,19 @@ class PetsDetails extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(name,style: TextStyle(color: Color(0xFF3D015B),fontSize: 12,fontWeight: FontWeight.w500),),
+                  Text(widget.name,style: TextStyle(color: Color(0xFF3D015B),fontSize: 12,fontWeight: FontWeight.w500),),
                   SizedBox(height: 5,),
-                  Text("$subtitle",style: TextStyle(color: Color(0xFF222222),fontSize: 10,fontWeight: FontWeight.w400),),
+                  Text("${widget.subtitle}",style: TextStyle(color: Color(0xFF222222),fontSize: 10,fontWeight: FontWeight.w400),),
                   SizedBox(height: 5,),
-                  Text("$months Months Old / $length feet length",style: TextStyle(fontSize: 10,color: Color(0xFFADADAD)),),
+                  Text("${widget.months} Months Old / ${widget.length} feet length",style: TextStyle(fontSize: 10,color: Color(0xFFADADAD)),),
                   SizedBox(height: 5,),
-                  Text("$gender",style: TextStyle(color: Color(0xFF5A5A5A),fontSize: 10),),
+                  Text("${widget.gender}",style: TextStyle(color: Color(0xFF5A5A5A),fontSize: 10),),
                   SizedBox(height: 5,),
                   Row(
                     children: [
                       Icon(Icons.location_on_outlined,size: 14,),
                       SizedBox(width: 3,),
-                      Text("$distance Miles",style: TextStyle(color: Color(0xFFADADAD),fontSize: 8),)
+                      Text("${widget.distance} Miles",style: TextStyle(color: Color(0xFFADADAD),fontSize: 8),)
                     ],
                   )
                 ],
@@ -347,7 +356,7 @@ class PetsDetails extends StatelessWidget {
   }
 }
 
-class PetsCategory extends StatelessWidget {
+class PetsCategory extends StatefulWidget {
   const PetsCategory({
     this.name,
     this.petcategory,
@@ -356,21 +365,34 @@ class PetsCategory extends StatelessWidget {
   final String petcategory;
 
   @override
+  _PetsCategoryState createState() => _PetsCategoryState();
+}
+
+class _PetsCategoryState extends State<PetsCategory> {
+  @override
   Widget build(BuildContext context) {
     return Row(
       children: [
         Padding(
           padding: const EdgeInsets.only(right:8.0,left: 2),
           child: Container(
-            decoration:petcategory != name ? BoxDecoration(): BoxDecoration(
+            decoration:widget.petcategory != widget.name ? BoxDecoration(): BoxDecoration(
               borderRadius: BorderRadius.circular(8),
-              color: Colors.red,
+              color: Color(0xFF3D015B),
+              boxShadow: [
+                BoxShadow(
+                  color: Color(0xFF3D015B4D),
+                  offset: Offset(0,6),
+                  blurRadius: 10,
+
+                )
+              ]
             ),
             height: 50,
             width: 50,
             child: Container(
                 alignment: Alignment.center,
-                child: Text(name)),
+                child: Text(widget.name, style: TextStyle(color: Color(0xFF5A5A5A),fontSize: 12,fontWeight: FontWeight.w500)),),
           ),
         )
       ],
